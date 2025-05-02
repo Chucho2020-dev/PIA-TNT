@@ -6,7 +6,7 @@ const profile = () => {
         <Layout>
             <h1>Perfil</h1>
         </Layout>
-    )
+    );
 }
 
 export default profile

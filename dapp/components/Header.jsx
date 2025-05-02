@@ -1,10 +1,11 @@
 import React from "react";
 import Menu from "./Menu";
+import styles from "../styles/Header.module.css"
 
 const Header = () => {
     return (
-        <header>
-            <h1>Logo</h1>
+        <header className={styles.header}>
+            <h1 className={styles.logo}>Logo</h1>
             <Menu />
         </header>
     )

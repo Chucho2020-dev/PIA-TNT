@@ -6,7 +6,7 @@ const products = () => {
         <Layout>
             <h1>Productos</h1>
         </Layout>
-    )
+    );
 }
 
 export default products
