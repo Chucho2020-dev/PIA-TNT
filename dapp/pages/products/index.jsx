@@ -1,7 +1,7 @@
 import React from "react";
-import Layout from "../components/Layout";
-import styles from '../styles/Products.module.css'
-import ProductCard from "../components/ProductCard";
+import Layout from "../../components/Layout";
+import styles from '../../styles/Products.module.css'
+import ProductCard from "../../components/ProductCard";
 
 const products = () => {
     return (
