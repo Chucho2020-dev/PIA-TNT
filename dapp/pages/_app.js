@@ -1,9 +1,13 @@
 import '../src/app/globals.css';
-import { createStore } from "redux";
+import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from "react-redux";
 import addresses from '../store/reducers/addresses';
 
-const store = createStore(addresses);
+const store = configureStore({
+    reducer: {
+        addresses: addresses
+    }
+})
 
 function MyApp({ Component, pageProps }) {
     return (
