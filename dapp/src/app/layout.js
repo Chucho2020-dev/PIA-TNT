@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 //import "./globals.css";
 //En ocaciones el page.jsx agarra este layout en vez del que hice
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
