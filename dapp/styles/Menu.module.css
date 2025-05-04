@@ -1,7 +1,7 @@
 .menu {
     list-style-type: none;
     display: flex;
-    margin-right: 10px;
+    margin-right: 25px;
 }
 
 .menu li {
@@ -9,6 +9,6 @@
     margin-right: 5px;
 }
 
-.main li a:hover {
+.main li Link:hover {
     color: var(--third-color)
 }

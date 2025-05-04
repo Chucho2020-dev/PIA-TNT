@@ -8,7 +8,7 @@ const Menu = () => {
             <ul className={styles.menu}>
                 <li>
                     <Link href="/">
-                        Inicio
+                       Inicio
                     </Link>
                 </li>
                 <li>

@@ -1,0 +1,25 @@
+.product_container {
+    width: 90vw;
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.product_main {
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.searchbar {
+    margin: 15px;
+    padding: 15px;
+    width: 55vw;
+    border: 1px solid var(--secondary-color);
+    border-radius: 15px;
+    outline: none;
+    color: var(--third-color);
+}
