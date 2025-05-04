@@ -26,7 +26,7 @@ const products = () => {
         if (total == 0) {
             setFeedback("No hay productos por mostrar.")
         } else {
-            setFeedback("")
+            setFeedback(`Existen actualmente: ${total} productos`)
             // Mostrar los productos
         }
     }, [])

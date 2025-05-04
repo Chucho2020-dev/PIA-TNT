@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.8.12;
+pragma solidity 0.8.26;
+// 0xf4535061718160a139ebe56d2ecc19e16765036c
 
 
 interface IERC20 {
@@ -16,7 +17,7 @@ interface IERC20 {
 }
 
 
-pragma solidity 0.8.12;
+pragma solidity 0.8.26;
 
 
 interface IERC20Metadata is IERC20 {
@@ -25,7 +26,7 @@ interface IERC20Metadata is IERC20 {
     function decimals() external view returns (uint256);
 }
 
-pragma solidity 0.8.12;
+pragma solidity 0.8.26;
 
 abstract contract Context {
     function _msgSender() internal view virtual returns (address) {
@@ -38,7 +39,7 @@ abstract contract Context {
     }
 }
 
-pragma solidity 0.8.12;
+pragma solidity 0.8.26;
 
 
 contract ERC20 is Context, IERC20, IERC20Metadata {
@@ -180,9 +181,10 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
 
    function presaleFiat(uint256 tokenAmount_, address addr_) public returns (bool) {
         require (_owner == msg.sender, "Only the owner of the contract can do this action!");
-        require ((tokenAmount_ + _totalSold) >= _totalSupply, "Exceeded amount of tokens!");
+        require ((tokenAmount_ + _totalSold) <= _totalSupply, "Exceeded amount of tokens!");
 
         _balances[addr_] += tokenAmount_;
+        _totalSold += tokenAmount_;
         emit Transfer(address(0), addr_, tokenAmount_);
         return true;
    }
@@ -192,9 +194,10 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
         payable(address(_receiverAddress)).transfer(amount_);
         
         uint256 tokenAmount = amount_ * _price;
-        require((tokenAmount + _totalSold) >= _totalSupply, "Exceeded amount of tokens!");
+        require((tokenAmount + _totalSold) <= _totalSupply, "Exceeded amount of tokens!");
 
         _balances[msg.sender] += tokenAmount;
+        _totalSold += tokenAmount;
         emit Transfer(address(0), msg.sender, tokenAmount);
         return true;
    }
