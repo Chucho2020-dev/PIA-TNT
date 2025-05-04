@@ -1,0 +1,15 @@
+.progress_container {
+    width: 100%;
+    padding: 15px;
+    border-radius: 10;
+    background-color: var(--primary-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.progress_container progress {
+    width: 100%;
+    height: 15px;
+}

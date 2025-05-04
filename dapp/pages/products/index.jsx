@@ -5,10 +5,13 @@ import ProductCard from "../../components/ProductCard";
 import { useSelector } from 'react-redux';
 import { useState } from "react";
 import managerABI from '../../abi/manage.json';
+import tokenABI from '../../abi/token.json';
 import Web3 from "web3";
+import addresses from "../../store/reducers/addresses";
 
 const products = () => {
     const [feedback, setFeedback] = useState("Cargando...");
+    const [products, setProducts] = useState([]);
 
     const managerAddress = useSelector((state) => state.addresses.managerAddress);
     const abiJSON = managerABI;
@@ -26,8 +29,32 @@ const products = () => {
         if (total == 0) {
             setFeedback("No hay productos por mostrar.")
         } else {
-            setFeedback(`Existen actualmente: ${total} productos`)
-            // Mostrar los productos
+            setFeedback("")
+            const _products = await contract.methods.getProducts().call();
+            const _productsInfo = await Promise.all(_products.map(async (product) => {
+                const tokenContract = new web3.eth.Contract(tokenABI, product);
+                const isActive = await tokenContract.methods.getActive().call();
+
+                if (isActive) {
+                    const price = await tokenContract.methods.getPrice().call();
+                    const tokenName = await tokenContract.methods.name().call();
+                    const symbol = await tokenContract.methods.symbol().call();
+                    const totalSold = await tokenContract.methods.getTotalSold().call();
+                    const totalSupply = await tokenContract.methods.totalSupply().call(); 
+                    
+                    return {
+                        name: tokenName,
+                        symbol: symbol,
+                        price: price,
+                        totalSold: totalSold,
+                        totalSupply: totalSupply,
+                        address: product
+                    }
+                } else {
+                    return null
+                }
+            }));
+            setProducts(_productsInfo);
         }
     }, [])
 
@@ -37,16 +64,9 @@ const products = () => {
             <input type="text" className={styles.searchbar}/>
             {feedback}
             <div className={styles.product_container}>
-                {/*<ProductCard title="Producto 1" short_description="Esto es un placeholder del producto" />
-                <ProductCard title="Producto 2" short_description="Esto es un placeholder del producto" />
-                <ProductCard title="Producto 3" short_description="Esto es un placeholder del producto" />
-                <ProductCard title="Producto 4" short_description="Esto es un placeholder del producto" />
-                <ProductCard title="Producto 5" short_description="Esto es un placeholder del producto" />
-                <ProductCard title="Producto 6" short_description="Esto es un placeholder del producto" />
-                <ProductCard title="Producto 7" short_description="Esto es un placeholder del producto" />
-                <ProductCard title="Producto 8" short_description="Esto es un placeholder del producto" />
-                <ProductCard title="Producto 9" short_description="Esto es un placeholder del producto" />
-                <ProductCard title="Producto 10" short_description="Esto es un placeholder del producto" />*/}
+                {products.map((product, index) => (
+                   <ProductCard key={index} product={product} /> 
+                ))}
             </div>
             </div>
         </Layout>
