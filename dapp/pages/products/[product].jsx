@@ -4,6 +4,8 @@ import Layout from "../../components/Layout";
 import Progress from "../../components/Progress";
 import Web3 from "web3";
 import changeChainId from "../../utils/changeChainId";
+import priceComposer from "../../utils/priceComposer";
+import token from '../../abi/token.json';
 
 const ProductDetail = () => {
     const router = useRouter()
@@ -14,13 +16,13 @@ const ProductDetail = () => {
     useEffect(() => {
         if (router.query.product) {
             try {
-                const parsed = JSON.parse(router.query.product, (key, value) => {
+                const product = JSON.parse(router.query.product, (key, value) => {
                     if (typeof value === "string" && /^\d+n$/.test(value)) {
                         return BigInt(value.slice(0, -1));
                     }
                     return value;
                 });
-                setProduct(parsed);
+                setProduct(product);
             } catch (e) {
                 console.log("Error al parsear el producto: ", e);
             }
@@ -47,7 +49,23 @@ const ProductDetail = () => {
             setFeedback(response.message);
         }
         
+        const availableTokens = product.totalSupply - product.totalSold;
+        if (availableTokens < amount) {
+            setFeedback("La cantidad de tokens que intenta comprar es mayor a la cantidad disponible!");
+            return;
+        }
+
+        if (amount <= 0) {
+            setFeedback("La cantidad de tokens a comprar no puede ser negativa!");
+        }
+
         const web3 = new Web3(window.ethereum);
+        const tokenContract = new web3.eth.Contract(token, product.address);
+        const decimals = await tokenContract.methods.decimals().call();
+        const totalPrice = amount * product.price;
+        const priceInWeis = priceComposer(totalPrice, decimals);
+
+
     }
     
     return (
