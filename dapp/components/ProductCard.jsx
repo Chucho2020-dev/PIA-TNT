@@ -9,7 +9,9 @@ const ProductCard = ({product}) => {
             <h3>{product.name}</h3>
             <p>{product.symbol}</p>
             <Progress totalSold={product.totalSold} totalSupply={product.totalSupply} />
-            <Link href="#">
+            <Link href={{pathname: '/products/[product]', query: {product: JSON.stringify(product, (key, value) =>
+                typeof value === "bigint" ? value.toString() + "n" : value
+            )}}}>
                 Acceder
             </Link>
         </div>

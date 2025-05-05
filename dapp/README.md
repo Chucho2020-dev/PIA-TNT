@@ -6,3 +6,5 @@ Es posible que en siguientes avances se cambie por uno propio - Commit #8
 En este commit se desplego el contrato de token.sol en sepolia, se agrego este contrato como producto a manager.sol y se modifico el indice de productos para comenzar a ver el contenido de la blockchain - Commit #9
 
 En este commit se modifico la tarjeta de productos para empezar a mostrar el nombre y el simbolo de los objetos en el contrato, ademas se agrego una barra que muestra el progreso de ventas totales - Commit #10
+
+En este commit se ha comenzado a trabajar en como se muestra la informacion del producto, por ahora persiste el siguiente error al entrar por primera vez a la pagina del producto TypeError: destroy is not a function, este se quita recargando la pagina, puede tener relacion con la solucion implementada al problema de pasar el producto en ProductCard hacia [product] - Commit #11
