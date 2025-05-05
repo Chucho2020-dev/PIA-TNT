@@ -8,6 +8,7 @@ import managerABI from '../../abi/manage.json';
 import tokenABI from '../../abi/token.json';
 import Web3 from "web3";
 import addresses from "../../store/reducers/addresses";
+import changeChainId from "../../utils/changeChainId";
 
 const products = () => {
     const [feedback, setFeedback] = useState("Cargando...");
@@ -16,12 +17,12 @@ const products = () => {
     const managerAddress = useSelector((state) => state.addresses.managerAddress);
     const abiJSON = managerABI;
 
-    useEffect(async () => {
-        if (!window.ethereum) {
-            setFeedback("Es necesario tener MetaMask para interactuar con los servicios de Web3");
+    const handleReadContract = async () => {
+        const response = await changeChainId();
+        if(!response.success) {
+            setFeedback(response.message)
             return;
         }
-
         setFeedback("Leyendo los contratos...");
         const web3 = new Web3(window.ethereum);
         const contract = new web3.eth.Contract(abiJSON, managerAddress);
@@ -56,7 +57,9 @@ const products = () => {
             }));
             setProducts(_productsInfo);
         }
-    }, [])
+    }
+
+    useEffect(() => {handleReadContract()}, [])
 
     return (
         <Layout>

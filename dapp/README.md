@@ -10,3 +10,5 @@ En este commit se modifico la tarjeta de productos para empezar a mostrar el nom
 En este commit se ha comenzado a trabajar en como se muestra la informacion del producto, por ahora persiste el siguiente error al entrar por primera vez a la pagina del producto TypeError: destroy is not a function, este se quita recargando la pagina, puede tener relacion con la solucion implementada al problema de pasar el producto en ProductCard hacia [product] - Commit #11
 
 En este commit se ha desarrollado mas la pagina [product], se ha agregado dos botones para compra, se ha implementado una verificacion de la wallet y de la red en la que se opera y si no es la de Sepolia se solicita el cambio - Commit #12
+
+En este commit se refactorizo el codigo de la verificacion de la cadena de bloques y de MetaMask, se soluciono el error de TypeError: destroy is not a function, parece que se debia a una mala estructura en un useEffect del indice de productos, aunque ahora la pagina cambia automaticamente la cadena a Sepolia sin preguntar como lo hacia en el commit anterior, falta revisar eso a futuro - Commit #13

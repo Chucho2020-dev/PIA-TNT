@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import Progress from "../../components/Progress";
 import Web3 from "web3";
+import changeChainId from "../../utils/changeChainId";
 
 const ProductDetail = () => {
     const router = useRouter()
@@ -40,28 +41,13 @@ const ProductDetail = () => {
 
     const handleBuyWithETH = async () => {
         setFeedback("Verificando la existencia de MetaMaks...")
-
-        // Conexion de la wallet
-        if (!window.ethereum) {
-            setFeedback("Necesita tener instalado MetaMask para poder interactuar con esta aplicación!");
-            return;
+        
+        const response = await changeChainId();
+        if (!response.success) {
+            setFeedback(response.message);
         }
-
-        // Verificacion del chainID
-        //chainID de sepolia: 11155111 - 0xaa36a7
+        
         const web3 = new Web3(window.ethereum);
-        const chainID = await web3.eth.getChainId();
-        if(chainID != 11155111) {
-            try {
-                await web3.eth.currentProvider.request({
-                    method: "wallet_switchEthereumChain",
-                    params: [{chainId: "0xaa36a7"}],
-                })
-            } catch (error) {
-                setFeedback(error.message);
-                return;
-            }
-        }
     }
     
     return (
