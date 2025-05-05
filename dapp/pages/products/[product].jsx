@@ -4,13 +4,12 @@ import Layout from "../../components/Layout";
 import Progress from "../../components/Progress";
 import Web3 from "web3";
 import changeChainId from "../../utils/changeChainId";
-import priceComposer from "../../utils/priceComposer";
 import token from '../../abi/token.json';
 
 const ProductDetail = () => {
     const router = useRouter()
     const [product, setProduct] = useState(null);
-    const [amount, setAmount] = useState(1);
+    const [amount, setAmount] = useState(100000000000000); // 100000000000000 -> 0.0001
     const [feedback, setFeedback] = useState("");
 
     useEffect(() => {
@@ -38,7 +37,14 @@ const ProductDetail = () => {
     }
 
     const handleAmount = (e) => {
-        setAmount(e.target.value)
+        const web3 = new Web3(window.ethereum);
+        try {
+            let weis = web3.utils.toWei(e.target.value, 'ether');
+            setAmount(weis);
+            setFeedback("");
+        } catch (e) {
+            setFeedback("Formato incorrecto!");
+        }
     }
 
     const handleBuyWithETH = async () => {
@@ -60,21 +66,24 @@ const ProductDetail = () => {
         }
 
         const web3 = new Web3(window.ethereum);
+        const accounts = await web3.eth.requestAccounts();
         const tokenContract = new web3.eth.Contract(token, product.address);
-        const decimals = await tokenContract.methods.decimals().call();
-        const totalPrice = amount * product.price;
-        const priceInWeis = priceComposer(totalPrice, decimals);
 
-
+        try {
+            const res = await tokenContract.methods.presale(amount).send({from: accounts[0], value: amount});
+            setFeedback("Transaccion completada! Revise en Id de la transaccion: " + res.blockHash);
+        } catch (error) {
+            setFeedback(error);
+        }
     }
     
     return (
         <Layout>
            <h1>{product.name}</h1>
             <p>{product.symbol}</p>
-            <p>Precio: {product.price} ETH </p>
+            <p>Precio: {product.price} tokens por ETH </p>
             <Progress totalSold={product.totalSold} totalSupply={product.totalSupply} />
-            <input type="number" onChange={handleAmount}></input>
+            <input type="number" step="0.0001" onChange={handleAmount}></input>
             <button onClick={() => {handleBuyWithETH()}}>Comprar con ETH</button>
             <button>Comprar con tarjeta de crédito</button>
             <h3>{feedback}</h3>
