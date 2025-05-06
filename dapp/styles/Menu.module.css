@@ -1,18 +1,36 @@
+.nav {
+    margin-left: 0;
+    width: 100%;
+}
+
 .menu {
     list-style-type: none;
     display: flex;
     flex-direction: column;
+    margin-left: 0;
+    padding-left: 0;
+    padding-right: 0;
+    margin-right: 0;
+    width: 100%;
 }
 
 .menu li {
-    margin-left: 25px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    height: 30px;
     color: var(--fourth-color);
+    width: 100%;
 }
 
-.main li Link:hover {
-    color: var(--third-color)
+.Link {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding-left: 25px;
+    height: 100%;
+    border-left: 3px solid var(--primary-color);
+}
+
+.Link:hover {
+    color: var(--fifth-color);
+    border-left: 3px solid var(--third-color);
 }
 
 .icon {

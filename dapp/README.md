@@ -18,3 +18,5 @@ En este commit se trabajo en una funcion para composicionar el precio de los obj
 En este commit se desplego otro token.sol para comenzar a trabajar en el pago de los tokens, se modificaron alguans lineas encargadas del precio en [product], se agrego una nueva variable de entorno global, se ha elimidado la utilidad de priceComposer, para usar una funcion de ethereum que nos permita calcular el valor de los tokens en Weis de mejor forma y asi aceptar micropagos con decimales, se realizo una compra de prueba con el siguiente id como evidencia: 0x7f5339e163d9ce04eba9a8824198a77e3ca37ae3f19093358ad64596122fa811 - Commit #15
 
 En este commit se hicieron muchas modificaciones de diseño a la pagina de inicio, muchas de estas modificicaciones se aplican para las demas paginas pero aun hay que trabajar en como se muestra en contenido en ellas - Commit #16
+
+En este commit se prosiguieron los trabajos en el diseño, esta vez enfocado en hacer la aplicacion mas resposiva para resoluciones de dispositivos moviles - Commit #17

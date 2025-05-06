@@ -6,20 +6,20 @@ import { PiUserCircleDashedBold } from "react-icons/pi";
 
 const Menu = () => {
     return (
-        <nav>
+        <nav className={styles.nav}>
             <ul className={styles.menu}>
                 <li>
-                    <Link href="/">
+                    <Link href="/" className={styles.Link}>
                     <SiHomebridge className={styles.icon} /> Inicio
                     </Link>
                 </li>
                 <li>
-                    <Link href="/products">
+                    <Link href="/products" className={styles.Link}>
                     <SiHomeassistantcommunitystore className={styles.icon} /> Productos
                     </Link>
                 </li>
                 <li>
-                    <Link href="/profile">
+                    <Link href="/profile" className={styles.Link}>
                     <PiUserCircleDashedBold className={styles.icon} /> Perfil
                     </Link>
                 </li>
