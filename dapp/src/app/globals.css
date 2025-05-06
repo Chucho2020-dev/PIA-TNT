@@ -1,9 +1,12 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --primary-color: #3c5759;
+  --primary-color: #394357;
   --secondary-color: #86373e;
   --third-color: #aac7d8;
+  --fourth-color: #cbdbfa;
+  --text-font: Unageo;
+  --title-font: NiseSegaSonic;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,9 +27,13 @@ body {
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--text-font);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5 ,h6 {
+  font-family: var(--title-font); 
 }
 
 * {
@@ -44,4 +51,14 @@ a {
   html {
     color-scheme: dark;
   }
+}
+
+@font-face {
+  font-family: Unageo;
+  src: url('../../assets/fonts/Unageo-Regular.ttf');
+}
+
+@font-face {
+  font-family: NiseSegaSonic;
+  src: url('../../assets/fonts/NiseSegaSonic.TTF');
 }
