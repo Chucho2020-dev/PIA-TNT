@@ -1,6 +1,6 @@
 .header {
     min-width: 16%;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     gap: 30px;
     flex-direction: column;
@@ -25,7 +25,7 @@
 @media(max-width: 1100px) {
     .header{
         width: 100vw;
-        height: auto;
+        min-height: auto;
     }
 
     .menuBtn {

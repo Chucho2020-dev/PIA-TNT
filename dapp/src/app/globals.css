@@ -6,6 +6,7 @@
   --third-color: #4bd5e9;
   --fourth-color: #cbdbfa;
   --fifth-color: #ffffff;
+  --text-color: #999;
   --text-font: Unageo;
   --title-font: NiseSegaSonic;
 }
@@ -54,6 +55,13 @@ a {
   }
 }
 
+.cardContanier {
+  width: 84%;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
 @font-face {
   font-family: Unageo;
   src: url('../../assets/fonts/Unageo-Regular.ttf');
@@ -62,4 +70,11 @@ a {
 @font-face {
   font-family: NiseSegaSonic;
   src: url('../../assets/fonts/NiseSegaSonic.TTF');
+}
+
+@media(max-width:1100px) {
+  .cardContanier {
+    width: 100%;
+    
+  }
 }

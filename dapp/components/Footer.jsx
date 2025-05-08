@@ -4,7 +4,7 @@ import styles from "../styles/Footer.module.css"
 const Footer = () => {
     return (
         <footer className={styles.footer}>
-            Footer
+            The New Technologies - Proyecto Integrador de Aprendizajes. Todos los derechos reservados. 2025
         </footer>
     )
 }
