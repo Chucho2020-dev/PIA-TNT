@@ -22,3 +22,5 @@ En este commit se hicieron muchas modificaciones de diseño a la pagina de inici
 En este commit se prosiguieron los trabajos en el diseño, esta vez enfocado en hacer la aplicacion mas resposiva para resoluciones de dispositivos moviles - Commit #17
 
 En este commit se produndizo en el diseño resonsivo, se agrego un boton que pliega y despliega el menu en resoluciones moviles, andemas de una pequeña animacion cuando las opciones aparecen, tambien se ha configurado para que el menu reaparezca al detectarse resoluciones mayores a 1100 px - Commit #18
+
+En este commit se agrego una barra auxiliar la cual servira de apoyo en la navegacion de las diferentes secciones de la aplicacion, asi como pequeños retoques esteticos a los componentes principales - Commit #19
