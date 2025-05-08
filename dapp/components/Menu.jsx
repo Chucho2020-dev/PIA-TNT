@@ -4,9 +4,10 @@ import styles from "../styles/Menu.module.css";
 import { SiHomebridge, SiHomeassistantcommunitystore } from "react-icons/si";
 import { PiUserCircleDashedBold } from "react-icons/pi";
 
-const Menu = () => {
+const Menu = ({showMenu}) => {
     return (
         <nav className={styles.nav}>
+            {showMenu ?
             <ul className={styles.menu}>
                 <li>
                     <Link href="/" className={styles.Link}>
@@ -23,7 +24,7 @@ const Menu = () => {
                     <PiUserCircleDashedBold className={styles.icon} /> Perfil
                     </Link>
                 </li>
-            </ul>
+            </ul> : null }
         </nav>
     )
 }

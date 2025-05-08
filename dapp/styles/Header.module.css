@@ -14,11 +14,33 @@
     margin-top: 20px;
     margin-left: 25px;
     font-size: 20px;
+    width: 100%;
+    align-items: center;
+}
+
+.menuBtn {
+    display: none;
 }
 
 @media(max-width: 1100px) {
     .header{
         width: 100vw;
         height: auto;
+    }
+
+    .menuBtn {
+        display: flex;
+        background-color: var(--primary-color);
+        outline: none;
+        border: 0;
+        color: var(--fifth-color);
+    }
+
+    .menuBtn:hover {
+        color: var(--secondary-color);
+    }
+    .logo {        
+        display: flex;
+        justify-content: space-evenly;
     }
 }

@@ -20,3 +20,5 @@ En este commit se desplego otro token.sol para comenzar a trabajar en el pago de
 En este commit se hicieron muchas modificaciones de diseño a la pagina de inicio, muchas de estas modificicaciones se aplican para las demas paginas pero aun hay que trabajar en como se muestra en contenido en ellas - Commit #16
 
 En este commit se prosiguieron los trabajos en el diseño, esta vez enfocado en hacer la aplicacion mas resposiva para resoluciones de dispositivos moviles - Commit #17
+
+En este commit se produndizo en el diseño resonsivo, se agrego un boton que pliega y despliega el menu en resoluciones moviles, andemas de una pequeña animacion cuando las opciones aparecen, tambien se ha configurado para que el menu reaparezca al detectarse resoluciones mayores a 1100 px - Commit #18
