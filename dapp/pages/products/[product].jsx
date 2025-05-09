@@ -78,7 +78,7 @@ const ProductDetail = () => {
     }
     
     return (
-        <Layout>
+        <Layout title={product.name}>
            <h1>{product.name}</h1>
             <p>{product.symbol}</p>
             <p>Precio: {product.price} tokens por ETH </p>

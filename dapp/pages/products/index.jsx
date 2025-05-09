@@ -7,8 +7,9 @@ import { useState } from "react";
 import managerABI from '../../abi/manage.json';
 import tokenABI from '../../abi/token.json';
 import Web3 from "web3";
-import addresses from "../../store/reducers/addresses";
 import changeChainId from "../../utils/changeChainId";
+import CardFull from "../../components/CardFull";
+import CardQuarter from "../../components/CardQuarter";
 
 const products = () => {
     const [feedback, setFeedback] = useState("Cargando...");
@@ -62,16 +63,20 @@ const products = () => {
     useEffect(() => {handleReadContract()}, [])
 
     return (
-        <Layout>
-            <div className={styles.product_main}>
-            <input type="text" className={styles.searchbar}/>
-            {feedback}
-            <div className={styles.product_container}>
+        <Layout title="Productos">
+            <section className="cardContanier">
+                <input type="text" className={styles.searchbar} placeholder="Buscar productos..."/>
+            </section>
+            
+            <span className={styles.feedback}>{feedback}</span>
+            
+            <section className="cardContanier">
                 {products.map((product, index) => (
-                   <ProductCard key={index} product={product} /> 
+                    <CardQuarter>
+                        <ProductCard key={index} product={product} />
+                    </CardQuarter> 
                 ))}
-            </div>
-            </div>
+            </section>
         </Layout>
     );
 }

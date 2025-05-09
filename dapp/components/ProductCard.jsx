@@ -11,7 +11,7 @@ const ProductCard = ({product}) => {
             <Progress totalSold={product.totalSold} totalSupply={product.totalSupply} />
             <Link href={{pathname: '/products/[product]', query: {product: JSON.stringify(product, (key, value) =>
                 typeof value === "bigint" ? value.toString() + "n" : value
-            )}}}>
+            )}}} className={styles.button}>
                 Acceder
             </Link>
         </div>

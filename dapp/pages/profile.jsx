@@ -3,7 +3,7 @@ import Layout from "../components/Layout";
 
 const profile = () => {
     return (
-        <Layout>
+        <Layout title="Perfil">
             <h1>Perfil</h1>
         </Layout>
     );

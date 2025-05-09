@@ -68,6 +68,17 @@ p {
   flex-wrap: wrap;
 }
 
+.pdn {
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.separador {
+  margin-top: 15px;
+}
+
 @font-face {
   font-family: Unageo;
   src: url('../../assets/fonts/Unageo-Regular.ttf');

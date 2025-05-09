@@ -28,3 +28,5 @@ En este commit se agrego una barra auxiliar la cual servira de apoyo en la naveg
 En este commit se agregaron tarjetas de contenido en la pagina de inicio, tambien se refinaron aspectos de diseño para las resoluciones moviles - Commit #20
 
 En este commit se agrego contenido a la pagina de inicio, se uso una full card para la bienvenida y dos half card para mostrar contenido de apoyo al usuario para esto se instalo la instancia se reatc-player - Commit #21
+
+En este commit se empezo el cambio de diseño en las cartas de los productos y se hicieron pequeños retoques a otras paginas - Commit #22

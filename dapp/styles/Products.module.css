@@ -17,9 +17,14 @@
 .searchbar {
     margin: 15px;
     padding: 15px;
-    width: 55vw;
+    width: 90%;
     border: 1px solid var(--secondary-color);
     border-radius: 15px;
     outline: none;
     color: var(--third-color);
+}
+
+.feedback {
+    margin: 20px;
+    color: var(--text-color)
 }
