@@ -1,6 +1,6 @@
 .header {
     min-width: 16%;
-    min-height: 100vh;
+    /* min-height: 100vh; */
     display: flex;
     gap: 30px;
     flex-direction: column;
@@ -8,6 +8,9 @@
     align-items: flex-start;
     background-color: var(--primary-color);
     color: white;
+    position: fixed;
+    min-height: 120vh;
+    z-index: 10;
 }
 
 .logo {

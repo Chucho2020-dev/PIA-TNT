@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
-import Progress from "../../components/Progress";
 import Web3 from "web3";
 import changeChainId from "../../utils/changeChainId";
 import token from '../../abi/token.json';
@@ -14,6 +13,7 @@ import { PiHandCoins } from "react-icons/pi";
 import { TbReceipt2 } from "react-icons/tb";
 import { GiCoins } from "react-icons/gi";
 import numberFormater from "../../utils/numberFormater";
+import descriptions from "../../public/descriptions/descriptions";
 
 const ProductDetail = () => {
     const router = useRouter()
@@ -152,7 +152,7 @@ const ProductDetail = () => {
                     <div className={styles.contentContainer}>
                         <img src={"/img/"+filteredProduct.symbol+".jpg"} className={styles.detailImg} />
                         <h1>{filteredProduct.name}</h1>
-                        <p>Esto es un placeholder de la descripcion.............................</p>
+                        <p>{descriptions[filteredProduct.symbol]}</p>
                     </div>
                 </div>
             </div>
