@@ -1,0 +1,1 @@
+export default description = "Esto es un placeholder para la descripcion de PAY"

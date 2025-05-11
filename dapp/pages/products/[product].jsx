@@ -8,6 +8,12 @@ import token from '../../abi/token.json';
 import tokenABI from '../../abi/token.json';
 import managerABI from '../../abi/manage.json';
 import { useSelector } from "react-redux";
+import styles from '../../styles/Product.module.css';
+import { BsCurrencyExchange } from "react-icons/bs";
+import { PiHandCoins } from "react-icons/pi";
+import { TbReceipt2 } from "react-icons/tb";
+import { GiCoins } from "react-icons/gi";
+import numberFormater from "../../utils/numberFormater";
 
 const ProductDetail = () => {
     const router = useRouter()
@@ -26,6 +32,7 @@ const ProductDetail = () => {
     });
 
     const handleAmount = (e) => {
+
         const web3 = new Web3(window.ethereum);
         try {
             let weis = web3.utils.toWei(e.target.value, 'ether');
@@ -37,6 +44,7 @@ const ProductDetail = () => {
     }
 
     const handleBuyWithETH = async () => {
+
         setFeedback("Verificando la existencia de MetaMaks...")
         
         const response = await changeChainId();
@@ -105,14 +113,49 @@ const ProductDetail = () => {
     
     return (
         <Layout title={filteredProduct.name}>
-           <h1>{filteredProduct.name}</h1>
-            <p>{filteredProduct.symbol}</p>
-            <p>Precio: {filteredProduct.price} tokens por ETH </p>
-            <Progress totalSold={filteredProduct.totalSold} totalSupply={filteredProduct.totalSupply} />
-            <input type="number" step="0.0001" onChange={handleAmount}></input>
-            <button onClick={() => {handleBuyWithETH()}}>Comprar con ETH</button>
-            <button>Comprar con tarjeta de crédito</button>
-            <h3>{feedback}</h3>
+            <div className={styles.container}>
+                <h1>{filteredProduct.name}</h1>
+
+                <div className={styles.infoContainer}>
+
+                    <div className={styles.icon_container}>
+                        <div className={styles.icon}>
+                            <span className={styles.featured}><BsCurrencyExchange size={30} /></span>
+                            <h5>Símbolo</h5>
+                            <p>{filteredProduct.symbol}</p>
+                        </div>
+                        <div className={styles.icon}>
+                            <span className={styles.featured}><PiHandCoins size={30} /></span>
+                            <h5>Tokens por ETH</h5>
+                            <p>{filteredProduct.price}</p>
+                        </div>
+
+                        <div className={styles.icon}>
+                        <span className={styles.featured}><TbReceipt2 size={30} /></span>
+                        <h5>Tokens vendidos</h5>
+                        <p>{numberFormater(filteredProduct.totalSold, filteredProduct.decimals)}</p>
+                        </div>
+                        <div className={styles.icon}>
+                            <span className={styles.featured}><GiCoins size={30} /></span>
+                            <h5>Tokens disponibles</h5>
+                            <p>{numberFormater(filteredProduct.totalSupply, filteredProduct.decimals)}</p>
+                        </div>
+                    </div>
+
+                    <div className={styles.basicInfo}>
+                        <a href={"/whitepapers/"+filteredProduct.symbol+".pdf"} target="_blank" className={styles.infoBTN} >Ver el WhitePaper</a>
+                        <input type="number" step="0.0001" onChange={handleAmount} className={styles.input} placeholder="0.0001" ></input>
+                        <button onClick={() => {handleBuyWithETH()}} className={styles.infoBTN} >Comprar con ETH</button>
+                        <h3 className={styles.feedback} >{feedback}</h3>
+                    </div>
+
+                    <div className={styles.contentContainer}>
+                        <img src={"/img/"+filteredProduct.symbol+".jpg"} className={styles.detailImg} />
+                        <h1>{filteredProduct.name}</h1>
+                        <p>Esto es un placeholder de la descripcion.............................</p>
+                    </div>
+                </div>
+            </div>
         </Layout>
     )
 }

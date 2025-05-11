@@ -36,3 +36,5 @@ En este commit se hicieron modificaciones a las cartas de productos, ahora se mu
 En este commit se hicieron los arreglos finales al diseño de las cartas de productos, ademas de que se agrego funcionalidad a la barra de busqueda de productos - Commit #24
 
 En este commit se han hecho midificaciones en como se manejan los datos en la url de cada uno de los productos - Commit #25
+
+En este commit se empezo el cambio de diseño de los diferentes productos, se han agragado varios archivos estaticos publicos como una imagen de fondo, una descripcion y un whitepaper, estos aun son de prueba, posteriormente deben complementarse - Commit #26
