@@ -27,7 +27,7 @@ const products = () => {
         setFeedback("Leyendo los contratos...");
         const web3 = new Web3(window.ethereum);
         const contract = new web3.eth.Contract(abiJSON, managerAddress);
-        const total = await contract.methods.getTotal().call(); //Este es la linea que da truena el programa cuando sepolia no responde
+        const total = await contract.methods.getTotal().call(); //Este es la linea que truena el programa cuando sepolia no responde
         if (total == 0) {
             setFeedback("No hay productos por mostrar.")
         } else {

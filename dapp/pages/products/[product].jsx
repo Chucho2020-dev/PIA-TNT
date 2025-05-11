@@ -5,36 +5,25 @@ import Progress from "../../components/Progress";
 import Web3 from "web3";
 import changeChainId from "../../utils/changeChainId";
 import token from '../../abi/token.json';
+import tokenABI from '../../abi/token.json';
+import managerABI from '../../abi/manage.json';
+import { useSelector } from "react-redux";
 
 const ProductDetail = () => {
     const router = useRouter()
-    const [product, setProduct] = useState(null);
+    const productSymbol = router.query.product
     const [amount, setAmount] = useState(100000000000000); // 100000000000000 -> 0.0001
     const [feedback, setFeedback] = useState("");
-
-    useEffect(() => {
-        if (router.query.product) {
-            try {
-                const product = JSON.parse(router.query.product, (key, value) => {
-                    if (typeof value === "string" && /^\d+n$/.test(value)) {
-                        return BigInt(value.slice(0, -1));
-                    }
-                    return value;
-                });
-                setProduct(product);
-            } catch (e) {
-                console.log("Error al parsear el producto: ", e);
-            }
-        }
-    }, [router.query.product])
-
-    if (!product) {
-        return (
-            <Layout>
-                <p>Cargando producto...</p>
-            </Layout>
-        )
-    }
+    const managerAddress = useSelector((state) => state.addresses.managerAddress);
+    const [filteredProduct, setFilteredProduct] = useState({
+        name: "Cargando...",
+        symbol: "Cargando...",
+        price: 0,
+        totalSold: 0,
+        totalSupply: 0,
+        decimals: 0,
+        address: "Cargando..."
+    });
 
     const handleAmount = (e) => {
         const web3 = new Web3(window.ethereum);
@@ -55,7 +44,7 @@ const ProductDetail = () => {
             setFeedback(response.message);
         }
         
-        const availableTokens = product.totalSupply - product.totalSold;
+        const availableTokens = filteredProduct.totalSupply - filteredProduct.totalSold;
         if (availableTokens < amount) {
             setFeedback("La cantidad de tokens que intenta comprar es mayor a la cantidad disponible!");
             return;
@@ -67,7 +56,7 @@ const ProductDetail = () => {
 
         const web3 = new Web3(window.ethereum);
         const accounts = await web3.eth.requestAccounts();
-        const tokenContract = new web3.eth.Contract(token, product.address);
+        const tokenContract = new web3.eth.Contract(token, filteredProduct.address);
 
         try {
             const res = await tokenContract.methods.presale(amount).send({from: accounts[0], value: amount});
@@ -76,13 +65,50 @@ const ProductDetail = () => {
             setFeedback(error);
         }
     }
+
+    const handleContractLoad = async () => {
+
+        const web3 = new Web3(window.ethereum)
+        const contract = new web3.eth.Contract(managerABI, managerAddress)
+        const products = await contract.methods.getProducts().call()
+        const productInfo = await Promise.all(products.map(async (item) => {
+            const tokenContract = new web3.eth.Contract(tokenABI, item)
+            const isActive = await tokenContract.methods.getActive().call()
+            const symbol = await tokenContract.methods.symbol().call()
+            if (isActive) {
+                const price = await tokenContract.methods.getPrice().call();
+                const totalSold = await tokenContract.methods.getTotalSold().call();
+                const totalSupply = await tokenContract.methods.totalSupply().call();
+                const tokenName = await tokenContract.methods.name().call(); 
+                const decimals = await tokenContract.methods.decimals().call();
+
+                return {
+                    name: tokenName,
+                    symbol: symbol,
+                    price: price,
+                    totalSold: totalSold,
+                    totalSupply: totalSupply,
+                    decimals: decimals,
+                    address: item
+                }
+            }
+        }))
+        const found = productInfo.find((item) => item.symbol === productSymbol)
+        setFilteredProduct(found)
+    }
+
+    useEffect(() => { 
+        if (router.isReady && managerAddress) {
+            handleContractLoad()
+        }
+    }, [router.isReady, managerAddress])
     
     return (
-        <Layout title={product.name}>
-           <h1>{product.name}</h1>
-            <p>{product.symbol}</p>
-            <p>Precio: {product.price} tokens por ETH </p>
-            <Progress totalSold={product.totalSold} totalSupply={product.totalSupply} />
+        <Layout title={filteredProduct.name}>
+           <h1>{filteredProduct.name}</h1>
+            <p>{filteredProduct.symbol}</p>
+            <p>Precio: {filteredProduct.price} tokens por ETH </p>
+            <Progress totalSold={filteredProduct.totalSold} totalSupply={filteredProduct.totalSupply} />
             <input type="number" step="0.0001" onChange={handleAmount}></input>
             <button onClick={() => {handleBuyWithETH()}}>Comprar con ETH</button>
             <button>Comprar con tarjeta de crédito</button>

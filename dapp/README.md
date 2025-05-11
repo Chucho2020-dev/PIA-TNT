@@ -34,3 +34,5 @@ En este commit se empezo el cambio de diseño en las cartas de los productos y s
 En este commit se hicieron modificaciones a las cartas de productos, ahora se muestra mas informacion sobre los tokens, tambien se le agregaron iconos a estos datos - Commit #23
 
 En este commit se hicieron los arreglos finales al diseño de las cartas de productos, ademas de que se agrego funcionalidad a la barra de busqueda de productos - Commit #24
+
+En este commit se han hecho midificaciones en como se manejan los datos en la url de cada uno de los productos - Commit #25
