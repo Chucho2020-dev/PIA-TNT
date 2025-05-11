@@ -39,7 +39,7 @@ const ProductDetail = () => {
             setAmount(weis);
             setFeedback("");
         } catch (e) {
-            setFeedback("Formato incorrecto!");
+            setFeedback("Formato incorrecto.");
         }
     }
 

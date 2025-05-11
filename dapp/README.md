@@ -40,3 +40,5 @@ En este commit se han hecho midificaciones en como se manejan los datos en la ur
 En este commit se empezo el cambio de diseño de los diferentes productos, se han agragado varios archivos estaticos publicos como una imagen de fondo, una descripcion y un whitepaper, estos aun son de prueba, posteriormente deben complementarse - Commit #26
 
 En este commit se termino el diseño de la pagina de productos, solamente dejando pendiente el complemento del contenido agregado, pues siguen mostrandoce contenidos de prueba - Commit #27
+
+En este commit se termino de dar los aspectos generales del proyecto, ahora se deben refinar algunos toques esteticos de la aplicacion - Commit #28
