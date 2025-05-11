@@ -6,6 +6,7 @@ import { BsCurrencyExchange } from "react-icons/bs";
 import { PiHandCoins } from "react-icons/pi";
 import { GiCoins } from "react-icons/gi";
 import { TbReceipt2 } from "react-icons/tb";
+import numberFormater from "../utils/numberFormater";
 
 const ProductCard = ({product}) => {
     return (
@@ -27,12 +28,12 @@ const ProductCard = ({product}) => {
                 <div className={styles.feature}>
                     <span className={styles.featured}><TbReceipt2 size={30} /></span>
                     <h5>Tokens vendidos</h5>
-                    <p>{product.totalSold}</p>
+                    <p>{numberFormater(product.totalSold, product.decimals)}</p>
                 </div>
                 <div className={styles.feature}>
                     <span className={styles.featured}><GiCoins size={30} /></span>
                     <h5>Tokens disponibles</h5>
-                    <p>{product.totalSupply}</p>
+                    <p>{numberFormater(product.totalSupply, product.decimals)}</p>
                 </div>
             </div>
             <Progress totalSold={product.totalSold} totalSupply={product.totalSupply} />

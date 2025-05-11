@@ -32,3 +32,5 @@ En este commit se agrego contenido a la pagina de inicio, se uso una full card p
 En este commit se empezo el cambio de diseño en las cartas de los productos y se hicieron pequeños retoques a otras paginas - Commit #22
 
 En este commit se hicieron modificaciones a las cartas de productos, ahora se muestra mas informacion sobre los tokens, tambien se le agregaron iconos a estos datos - Commit #23
+
+En este commit se hicieron los arreglos finales al diseño de las cartas de productos, ademas de que se agrego funcionalidad a la barra de busqueda de productos - Commit #24
