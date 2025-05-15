@@ -31,15 +31,15 @@ const ProductDetail = () => {
         address: "Cargando..."
     });
 
-    const handleAmount = (e) => {
+    const handleAmount = () => {
 
         const web3 = new Web3(window.ethereum);
         try {
             let weis = web3.utils.toWei(e.target.value, 'ether');
             setAmount(weis);
-            setFeedback("");
+            setFeedback(" ");
         } catch (e) {
-            setFeedback("Formato incorrecto.");
+            setFeedback("Formato incorrecto!");
         }
     }
 
@@ -60,6 +60,7 @@ const ProductDetail = () => {
 
         if (amount <= 0) {
             setFeedback("La cantidad de tokens a comprar no puede ser negativa!");
+            return;
         }
 
         const web3 = new Web3(window.ethereum);
@@ -68,13 +69,18 @@ const ProductDetail = () => {
 
         try {
             const res = await tokenContract.methods.presale(amount).send({from: accounts[0], value: amount});
-            setFeedback("Transaccion completada! Revise en Id de la transaccion: " + res.blockHash);
+            setFeedback("Transacción completada! Revise en Id de la transaccion: " + res.blockHash);
         } catch (error) {
-            setFeedback(error);
+            setFeedback("Transacción no completada: " + error.message);
         }
     }
 
     const handleContractLoad = async () => {
+        const response = await changeChainId();
+        if(!response.success) {
+            setFeedback(response.message)
+            return;
+        }
 
         const web3 = new Web3(window.ethereum)
         const contract = new web3.eth.Contract(managerABI, managerAddress)

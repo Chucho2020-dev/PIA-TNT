@@ -42,3 +42,5 @@ En este commit se empezo el cambio de diseño de los diferentes productos, se ha
 En este commit se termino el diseño de la pagina de productos, solamente dejando pendiente el complemento del contenido agregado, pues siguen mostrandoce contenidos de prueba - Commit #27
 
 En este commit se termino de dar los aspectos generales del proyecto, ahora se deben refinar algunos toques esteticos de la aplicacion - Commit #28
+
+En este commit se trabajaron detalles esteticos y se corrigieron algunos detalles que generaban errores en el programa - Commit #29

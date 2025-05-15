@@ -1,6 +1,5 @@
 .header {
     min-width: 16%;
-    /* min-height: 100vh; */
     display: flex;
     gap: 30px;
     flex-direction: column;

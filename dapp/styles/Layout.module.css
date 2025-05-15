@@ -22,4 +22,10 @@
     .mainContainer{
         flex-direction: column;
     }
+
+    .mainSection {
+        margin-top: 100px;
+        margin-left: 0;
+        margin-bottom: 45px;
+    }
 }

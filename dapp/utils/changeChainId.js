@@ -11,7 +11,7 @@ const changeChainId = async () => {
     //chainID de sepolia: 11155111 - 0xaa36a7
     const web3 = new Web3(window.ethereum);
     const chainID = await web3.eth.getChainId();
-    if(chainID != process.env.NEXT_PUBLIC_CHAIN_ID) {
+    if(chainID.toString() != process.env.NEXT_PUBLIC_CHAIN_ID) {
         try {
             await web3.eth.currentProvider.request({
                 method: "wallet_switchEthereumChain",

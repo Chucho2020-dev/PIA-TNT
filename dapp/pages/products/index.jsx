@@ -24,10 +24,15 @@ const products = () => {
             setFeedback(response.message)
             return;
         }
+        
         setFeedback("Leyendo los contratos...");
         const web3 = new Web3(window.ethereum);
+        if(typeof web3 === "undefined"){
+            setFeedback("MetaMask no esta disponible, intenta mas tarde");
+            return;
+        }
         const contract = new web3.eth.Contract(abiJSON, managerAddress);
-        const total = await contract.methods.getTotal().call(); //Este es la linea que truena el programa cuando sepolia no responde
+        const total = await contract.methods.getTotal().call();
         if (total == 0) {
             setFeedback("No hay productos por mostrar.")
         } else {

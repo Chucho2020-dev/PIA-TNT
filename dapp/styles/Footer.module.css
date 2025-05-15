@@ -19,5 +19,7 @@
 @media(max-width: 1100px) {
     .footer {
         width: 100%;
+        position: absolute;
+        bottom: 0;
     }
 }
