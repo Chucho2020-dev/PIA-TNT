@@ -1,17 +1,9 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { GeistSans, GeistMono } from 'geist/font'
 //import "./globals.css";
 //En ocaciones el page.jsx agarra este layout en vez del que hice
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
+const geistSans = GeistSans
+const geistMono = GeistMono
 
 export default function RootLayout({ children }) {
   return (
