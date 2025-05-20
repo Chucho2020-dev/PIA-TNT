@@ -35,3 +35,130 @@
     border-radius: 10px;
     border: 1px #ccc dotted;  
 }
+
+.profileContainer {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.error {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.feedback {
+    display: block;
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #666;
+}
+
+.cardContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.tokenCard {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.tokenCard:hover {
+    transform: translateY(-5px);
+}
+
+.tokenCard h3 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.tokenCard h5 {
+    color: #666;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.tokenInfo {
+    background: #f5f5f5;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+.tokenInfo p {
+    color: #333;
+    font-size: 0.9rem;
+}
+
+.noTokens {
+    text-align: center;
+    padding: 2rem;
+    background: #f5f5f5;
+    border-radius: 12px;
+}
+
+.noTokens h3 {
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.noTokens p {
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.buyButton {
+    display: inline-block;
+    background: #2196f3;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.buyButton:hover {
+    background: #1976d2;
+}
+
+.refreshButton {
+    background-color: #2196f3;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 10px 0;
+    transition: background-color 0.2s ease;
+}
+
+.refreshButton:hover {
+    background-color: #1976d2;
+}
+
+.debugInfo {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 12px;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.debugInfo h4 {
+    margin: 0 0 10px 0;
+    color: #333;
+}

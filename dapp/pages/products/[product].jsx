@@ -31,8 +31,7 @@ const ProductDetail = () => {
         address: "Cargando..."
     });
 
-    const handleAmount = () => {
-
+    const handleAmount = (e) => {
         const web3 = new Web3(window.ethereum);
         try {
             let weis = web3.utils.toWei(e.target.value, 'ether');
@@ -44,12 +43,12 @@ const ProductDetail = () => {
     }
 
     const handleBuyWithETH = async () => {
-
-        setFeedback("Verificando la existencia de MetaMaks...")
+        setFeedback("Verificando la existencia de MetaMask...")
         
         const response = await changeChainId();
         if (!response.success) {
             setFeedback(response.message);
+            return;
         }
         
         const availableTokens = filteredProduct.totalSupply - filteredProduct.totalSold;
@@ -68,10 +67,83 @@ const ProductDetail = () => {
         const tokenContract = new web3.eth.Contract(token, filteredProduct.address);
 
         try {
-            const res = await tokenContract.methods.presale(amount).send({from: accounts[0], value: amount});
-            setFeedback("Transacción completada! Revise en Id de la transaccion: " + res.blockHash);
+            setFeedback("Enviando transacción...");
+            
+            // Estimar el gas necesario
+            const gasEstimate = await tokenContract.methods.presale(amount).estimateGas({
+                from: accounts[0],
+                value: amount
+            });
+
+            // Convertir el gas estimado a número y añadir 20%
+            const gasLimit = Number(gasEstimate) * 1.2;
+            
+            const res = await tokenContract.methods.presale(amount).send({
+                from: accounts[0], 
+                value: amount,
+                gas: Math.floor(gasLimit)
+            });
+            
+            // Verificar el estado de la transacción
+            const receipt = await web3.eth.getTransactionReceipt(res.transactionHash);
+            if (receipt.status) {
+                const etherscanUrl = `https://sepolia.etherscan.io/tx/${res.transactionHash}`;
+                setFeedback(
+                    <div>
+                        ¡Transacción completada! 
+                        <br />
+                        <div style={{ margin: '10px 0' }}>
+                            Hash: {res.transactionHash}
+                            <button 
+                                onClick={() => {
+                                    navigator.clipboard.writeText(res.transactionHash);
+                                    const button = document.getElementById('copyButton');
+                                    button.textContent = '¡Copiado!';
+                                    setTimeout(() => {
+                                        button.textContent = 'Copiar';
+                                    }, 2000);
+                                }}
+                                id="copyButton"
+                                style={{
+                                    marginLeft: '10px',
+                                    padding: '5px 10px',
+                                    backgroundColor: '#2196f3',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Copiar
+                            </button>
+                        </div>
+                        <a 
+                            href={etherscanUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            style={{ color: '#2196f3', textDecoration: 'underline' }}
+                        >
+                            Ver transacción en Etherscan
+                        </a>
+                    </div>
+                );
+                console.log("Hash de la transacción:", res.transactionHash);
+                // Esperar a que se confirme la transacción
+                await new Promise(resolve => setTimeout(resolve, 5000));
+                // Actualizar la página para mostrar los nuevos tokens
+                window.location.reload();
+            } else {
+                setFeedback("La transacción falló. Por favor, intenta de nuevo.");
+            }
         } catch (error) {
-            setFeedback("Transacción no completada: " + error.message);
+            console.error("Error en la transacción:", error);
+            if (error.message.includes("user denied")) {
+                setFeedback("Transacción cancelada por el usuario");
+            } else if (error.message.includes("insufficient funds")) {
+                setFeedback("Fondos insuficientes para completar la transacción");
+            } else {
+                setFeedback("Error en la transacción: " + error.message);
+            }
         }
     }
 

@@ -73,5 +73,37 @@
 }
 
 .feedback {
+    margin: 20px;
     color: var(--text-color);
+    text-align: center;
+}
+
+.feedback div {
+    margin: 10px 0;
+    word-break: break-all;
+}
+
+.feedback button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: #2196f3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.feedback button:hover {
+    background-color: #1976d2;
+}
+
+.feedback a {
+    color: #2196f3;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+.feedback a:hover {
+    color: #1976d2;
 }
