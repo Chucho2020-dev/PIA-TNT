@@ -39,36 +39,98 @@ const products = () => {
             setFeedback("")
             const _products = await contract.methods.getProducts().call();
             const _productsInfo = await Promise.all(_products.map(async (product) => {
-                const tokenContract = new web3.eth.Contract(tokenABI, product);
-                const isActive = await tokenContract.methods.getActive().call();
+                try {
+                    const tokenContract = new web3.eth.Contract(tokenABI, product);
+                    const isActive = await tokenContract.methods.getActive().call();
 
-                if (isActive) {
-                    const price = await tokenContract.methods.getPrice().call();
-                    const tokenName = await tokenContract.methods.name().call();
-                    const symbol = await tokenContract.methods.symbol().call();
-                    const totalSold = await tokenContract.methods.getTotalSold().call();
-                    const totalSupply = await tokenContract.methods.totalSupply().call();
-                    const decimals = await tokenContract.methods.decimals().call();
-                    
-                    return {
-                        name: tokenName,
-                        symbol: symbol,
-                        price: price,
-                        totalSold: totalSold,
-                        totalSupply: totalSupply,
-                        address: product,
-                        decimals: decimals
+                    if (isActive) {
+                        const price = await tokenContract.methods.getPrice().call();
+                        const tokenName = await tokenContract.methods.name().call();
+                        const symbol = await tokenContract.methods.symbol().call();
+                        const totalSold = await tokenContract.methods.getTotalSold().call();
+                        const totalSupply = await tokenContract.methods.totalSupply().call();
+                        const decimals = await tokenContract.methods.decimals().call();
+                        
+                        // Convertir los valores a números y ajustar por decimales
+                        const soldTokens = web3.utils.fromWei(totalSold, 'ether');
+                        const supplyTokens = web3.utils.fromWei(totalSupply, 'ether');
+                        
+                        // Calcular tokens disponibles
+                        const availableTokens = web3.utils.fromWei(
+                            web3.utils.toBN(totalSupply).sub(web3.utils.toBN(totalSold)).toString(),
+                            'ether'
+                        );
+                        
+                        console.log(`Token ${symbol}:`, {
+                            totalSold: soldTokens,
+                            totalSupply: supplyTokens,
+                            availableTokens: availableTokens,
+                            decimals: decimals,
+                            rawTotalSold: totalSold,
+                            rawTotalSupply: totalSupply
+                        });
+
+                        return {
+                            name: tokenName,
+                            symbol: symbol,
+                            price: price,
+                            totalSold: soldTokens,
+                            totalSupply: supplyTokens,
+                            availableTokens: availableTokens,
+                            address: product,
+                            decimals: decimals,
+                            rawTotalSold: totalSold,
+                            rawTotalSupply: totalSupply
+                        }
                     }
-                } else {
-                    return null
+                } catch (error) {
+                    console.error(`Error al leer el contrato ${product}:`, error);
                 }
+                return null;
             }));
-            setProducts(_productsInfo);
-            setFilteredProducts(_productsInfo);
+            
+            const validProducts = _productsInfo.filter(product => product !== null);
+            setProducts(validProducts);
+            setFilteredProducts(validProducts);
         }
     }
 
-    useEffect(() => {handleReadContract()}, [])
+    // Función para actualizar los valores después de una transacción
+    const updateAfterTransaction = async () => {
+        console.log("Actualizando después de transacción...");
+        await handleReadContract();
+    };
+
+    useEffect(() => {
+        handleReadContract();
+        const interval = setInterval(handleReadContract, 3000); // Actualizar cada 3 segundos
+
+        // Suscribirse a eventos de MetaMask
+        if (window.ethereum) {
+            window.ethereum.on('chainChanged', () => {
+                window.location.reload();
+            });
+
+            window.ethereum.on('accountsChanged', () => {
+                window.location.reload();
+            });
+
+            // Escuchar eventos de transacciones
+            window.ethereum.on('transactionHash', () => {
+                console.log("Transacción detectada, actualizando...");
+                updateAfterTransaction();
+            });
+        }
+
+        return () => {
+            clearInterval(interval);
+            if (window.ethereum) {
+                window.ethereum.removeAllListeners('chainChanged');
+                window.ethereum.removeAllListeners('accountsChanged');
+                window.ethereum.removeAllListeners('transactionHash');
+            }
+        };
+    }, []);
 
     const handleSearch = (event) => {
         setFilteredProducts(products.filter(product => product.name.toLowerCase().includes(event.target.value.toLowerCase())))
@@ -84,8 +146,8 @@ const products = () => {
             
             <section className="cardContanier">
                 {filteredProducts.map((filteredProduct, index) => (
-                    <CardQuarter>
-                        <ProductCard key={index} product={filteredProduct} />
+                    <CardQuarter key={index}>
+                        <ProductCard product={filteredProduct} />
                     </CardQuarter> 
                 ))}
             </section>
