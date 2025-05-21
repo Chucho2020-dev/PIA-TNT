@@ -9,6 +9,14 @@ import { TbReceipt2 } from "react-icons/tb";
 import numberFormater from "../utils/numberFormater";
 
 const ProductCard = ({product}) => {
+    // Asegurar que los valores sean números y manejar los decimales
+    const totalSold = parseFloat(product.totalSold) || 0;
+    const totalSupply = parseFloat(product.totalSupply) || 0;
+    const availableTokens = parseFloat(product.availableTokens) || 0;
+    
+    // Calcular el porcentaje de progreso
+    const progressPercentage = totalSupply > 0 ? (totalSold * 100) / totalSupply : 0;
+
     return (
         <div className={styles.product_card}>
             <h3>{product.name}</h3>
@@ -28,15 +36,15 @@ const ProductCard = ({product}) => {
                 <div className={styles.feature}>
                     <span className={styles.featured}><TbReceipt2 size={30} /></span>
                     <h5>Tokens vendidos</h5>
-                    <p>{numberFormater(product.totalSold, product.decimals)}</p>
+                    <p>{totalSold.toFixed(4)}</p>
                 </div>
                 <div className={styles.feature}>
                     <span className={styles.featured}><GiCoins size={30} /></span>
                     <h5>Tokens disponibles</h5>
-                    <p>{numberFormater(product.totalSupply, product.decimals)}</p>
+                    <p>{availableTokens.toFixed(4)}</p>
                 </div>
             </div>
-            <Progress totalSold={product.totalSold} totalSupply={product.totalSupply} />
+            <Progress totalSold={totalSold} totalSupply={totalSupply} />
             <Link href={{pathname: '/products/[product]', query: {product: product.symbol }}} className={styles.button}>
                 Acceder
             </Link>

@@ -34,7 +34,16 @@ const ProductDetail = () => {
     const handleAmount = (e) => {
         const web3 = new Web3(window.ethereum);
         try {
-            let weis = web3.utils.toWei(e.target.value, 'ether');
+            const value = parseFloat(e.target.value);
+            
+            // Validar que el valor esté dentro del rango permitido
+            if (value < 0.0001) {
+                setFeedback("El valor mínimo es 0.0001 ETH");
+                return;
+            }
+
+            // Convertir el valor a Wei
+            let weis = web3.utils.toWei(value.toString(), 'ether');
             setAmount(weis);
             setFeedback(" ");
         } catch (e) {
@@ -50,19 +59,21 @@ const ProductDetail = () => {
             setFeedback(response.message);
             return;
         }
+
+        const web3 = new Web3(window.ethereum);
+        const availableTokens = parseFloat(filteredProduct.availableTokens);
+        const amountInEth = web3.utils.fromWei(amount, 'ether');
         
-        const availableTokens = filteredProduct.totalSupply - filteredProduct.totalSold;
-        if (availableTokens < amount) {
+        if (parseFloat(amountInEth) > availableTokens) {
             setFeedback("La cantidad de tokens que intenta comprar es mayor a la cantidad disponible!");
             return;
         }
 
-        if (amount <= 0) {
-            setFeedback("La cantidad de tokens a comprar no puede ser negativa!");
+        if (parseFloat(amountInEth) < 0.0001) {
+            setFeedback("La cantidad mínima de compra es 0.0001 ETH!");
             return;
         }
 
-        const web3 = new Web3(window.ethereum);
         const accounts = await web3.eth.requestAccounts();
         const tokenContract = new web3.eth.Contract(token, filteredProduct.address);
 
@@ -158,44 +169,87 @@ const ProductDetail = () => {
         const contract = new web3.eth.Contract(managerABI, managerAddress)
         const products = await contract.methods.getProducts().call()
         const productInfo = await Promise.all(products.map(async (item) => {
-            const tokenContract = new web3.eth.Contract(tokenABI, item)
-            const isActive = await tokenContract.methods.getActive().call()
-            const symbol = await tokenContract.methods.symbol().call()
-            if (isActive) {
-                const price = await tokenContract.methods.getPrice().call();
-                const totalSold = await tokenContract.methods.getTotalSold().call();
-                const totalSupply = await tokenContract.methods.totalSupply().call();
-                const tokenName = await tokenContract.methods.name().call(); 
-                const decimals = await tokenContract.methods.decimals().call();
+            try {
+                const tokenContract = new web3.eth.Contract(tokenABI, item)
+                const isActive = await tokenContract.methods.getActive().call()
+                const symbol = await tokenContract.methods.symbol().call()
+                if (isActive) {
+                    const price = await tokenContract.methods.getPrice().call();
+                    const totalSold = await tokenContract.methods.getTotalSold().call();
+                    const totalSupply = await tokenContract.methods.totalSupply().call();
+                    const tokenName = await tokenContract.methods.name().call(); 
+                    const decimals = await tokenContract.methods.decimals().call();
 
-                return {
-                    name: tokenName,
-                    symbol: symbol,
-                    price: price,
-                    totalSold: totalSold,
-                    totalSupply: totalSupply,
-                    decimals: decimals,
-                    address: item
+                    // Convertir los valores a números y ajustar por decimales
+                    const soldTokens = web3.utils.fromWei(totalSold, 'ether');
+                    const supplyTokens = web3.utils.fromWei(totalSupply, 'ether');
+                    
+                    // Calcular tokens disponibles
+                    const availableTokens = web3.utils.fromWei(
+                        web3.utils.toBN(totalSupply).sub(web3.utils.toBN(totalSold)).toString(),
+                        'ether'
+                    );
+
+                    console.log(`Token ${symbol} en detalle:`, {
+                        totalSold: soldTokens,
+                        totalSupply: supplyTokens,
+                        availableTokens: availableTokens,
+                        decimals: decimals,
+                        rawTotalSold: totalSold,
+                        rawTotalSupply: totalSupply
+                    });
+
+                    return {
+                        name: tokenName,
+                        symbol: symbol,
+                        price: price,
+                        totalSold: soldTokens,
+                        totalSupply: supplyTokens,
+                        availableTokens: availableTokens,
+                        decimals: decimals,
+                        address: item,
+                        rawTotalSold: totalSold,
+                        rawTotalSupply: totalSupply
+                    }
                 }
+            } catch (error) {
+                console.error(`Error al leer el contrato ${item}:`, error);
             }
-        }))
-        const found = productInfo.find((item) => item.symbol === productSymbol)
-        setFilteredProduct(found)
+            return null;
+        }));
+
+        const found = productInfo.find((item) => item && item.symbol === productSymbol);
+        if (found) {
+            setFilteredProduct(found);
+        } else {
+            setFeedback("No se encontró el producto");
+        }
     }
 
     useEffect(() => { 
         if (router.isReady && managerAddress) {
-            handleContractLoad()
+            handleContractLoad();
+            // Actualizar cada 3 segundos
+            const interval = setInterval(handleContractLoad, 3000);
+            return () => clearInterval(interval);
         }
-    }, [router.isReady, managerAddress])
+    }, [router.isReady, managerAddress]);
     
     return (
         <Layout title={filteredProduct.name}>
             <div className={styles.container}>
-                <h1>{filteredProduct.name}</h1>
+                <div className={styles.horizontalContent} style={{ marginBottom: '40px' }}>
+                    <img src={"/img/"+filteredProduct.symbol+".jpg"} className={styles.detailImg} />
+                    <div className={styles.textContent}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                            <h1>{filteredProduct.name}</h1>
+                            <a href={"/whitepapers/"+filteredProduct.symbol+".pdf"} target="_blank" className={styles.infoBTN} style={{ padding: '10px 20px', fontSize: '14px' }}>Ver WhitePaper</a>
+                        </div>
+                        <p>{descriptions[filteredProduct.symbol]}</p>
+                    </div>
+                </div>
 
                 <div className={styles.infoContainer}>
-
                     <div className={styles.icon_container}>
                         <div className={styles.icon}>
                             <span className={styles.featured}><BsCurrencyExchange size={30} /></span>
@@ -207,30 +261,30 @@ const ProductDetail = () => {
                             <h5>Tokens por ETH</h5>
                             <p>{filteredProduct.price}</p>
                         </div>
-
                         <div className={styles.icon}>
-                        <span className={styles.featured}><TbReceipt2 size={30} /></span>
-                        <h5>Tokens vendidos</h5>
-                        <p>{numberFormater(filteredProduct.totalSold, filteredProduct.decimals)}</p>
+                            <span className={styles.featured}><TbReceipt2 size={30} /></span>
+                            <h5>Tokens vendidos</h5>
+                            <p>{parseFloat(filteredProduct.totalSold).toFixed(4)}</p>
                         </div>
                         <div className={styles.icon}>
                             <span className={styles.featured}><GiCoins size={30} /></span>
                             <h5>Tokens disponibles</h5>
-                            <p>{numberFormater(filteredProduct.totalSupply, filteredProduct.decimals)}</p>
+                            <p>{parseFloat(filteredProduct.availableTokens).toFixed(4)}</p>
                         </div>
                     </div>
 
                     <div className={styles.basicInfo}>
-                        <a href={"/whitepapers/"+filteredProduct.symbol+".pdf"} target="_blank" className={styles.infoBTN} >Ver el WhitePaper</a>
-                        <input type="number" step="0.0001" onChange={handleAmount} className={styles.input} placeholder="0.0001" ></input>
+                        <input 
+                            type="number" 
+                            step="0.0001" 
+                            min="0.0001"
+                            max={filteredProduct.availableTokens}
+                            onChange={handleAmount} 
+                            className={styles.input} 
+                            placeholder="0.0001"
+                        />
                         <button onClick={() => {handleBuyWithETH()}} className={styles.infoBTN} >Comprar con ETH</button>
                         <h3 className={styles.feedback} >{feedback}</h3>
-                    </div>
-
-                    <div className={styles.contentContainer}>
-                        <img src={"/img/"+filteredProduct.symbol+".jpg"} className={styles.detailImg} />
-                        <h1>{filteredProduct.name}</h1>
-                        <p>{descriptions[filteredProduct.symbol]}</p>
                     </div>
                 </div>
             </div>
