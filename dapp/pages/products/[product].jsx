@@ -20,6 +20,7 @@ const ProductDetail = () => {
     const productSymbol = router.query.product
     const [amount, setAmount] = useState(100000000000000); // 100000000000000 -> 0.0001
     const [feedback, setFeedback] = useState("");
+    const [transactionDetails, setTransactionDetails] = useState(null);
     const managerAddress = useSelector((state) => state.addresses.managerAddress);
     const [filteredProduct, setFilteredProduct] = useState({
         name: "Cargando...",
@@ -62,7 +63,15 @@ const ProductDetail = () => {
 
         const web3 = new Web3(window.ethereum);
         const availableTokens = parseFloat(filteredProduct.availableTokens);
-        const amountInEth = web3.utils.fromWei(amount, 'ether');
+        
+        // Validar que amount sea un número válido
+        if (!amount || isNaN(amount)) {
+            setFeedback("Por favor, ingrese una cantidad válida");
+            return;
+        }
+
+        // Convertir amount a string para evitar errores de precisión
+        const amountInEth = web3.utils.fromWei(amount.toString(), 'ether');
         
         if (parseFloat(amountInEth) > availableTokens) {
             setFeedback("La cantidad de tokens que intenta comprar es mayor a la cantidad disponible!");
@@ -81,17 +90,17 @@ const ProductDetail = () => {
             setFeedback("Enviando transacción...");
             
             // Estimar el gas necesario
-            const gasEstimate = await tokenContract.methods.presale(amount).estimateGas({
+            const gasEstimate = await tokenContract.methods.presale(amount.toString()).estimateGas({
                 from: accounts[0],
-                value: amount
+                value: amount.toString()
             });
 
             // Convertir el gas estimado a número y añadir 20%
             const gasLimit = Number(gasEstimate) * 1.2;
             
-            const res = await tokenContract.methods.presale(amount).send({
+            const res = await tokenContract.methods.presale(amount.toString()).send({
                 from: accounts[0], 
-                value: amount,
+                value: amount.toString(),
                 gas: Math.floor(gasLimit)
             });
             
@@ -99,12 +108,27 @@ const ProductDetail = () => {
             const receipt = await web3.eth.getTransactionReceipt(res.transactionHash);
             if (receipt.status) {
                 const etherscanUrl = `https://sepolia.etherscan.io/tx/${res.transactionHash}`;
-                setFeedback(
-                    <div>
+                const transactionInfo = (
+                    <div style={{ textAlign: 'left' }}>
                         ¡Transacción completada! 
                         <br />
-                        <div style={{ margin: '10px 0' }}>
-                            Hash: {res.transactionHash}
+                        <div style={{ 
+                            margin: '10px 0',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            flexWrap: 'wrap'
+                        }}>
+                            <span style={{ 
+                                wordBreak: 'break-all',
+                                fontFamily: 'monospace',
+                                backgroundColor: '#f5f5f5',
+                                padding: '8px',
+                                borderRadius: '4px',
+                                fontSize: '14px'
+                            }}>
+                                {res.transactionHash}
+                            </span>
                             <button 
                                 onClick={() => {
                                     navigator.clipboard.writeText(res.transactionHash);
@@ -116,13 +140,13 @@ const ProductDetail = () => {
                                 }}
                                 id="copyButton"
                                 style={{
-                                    marginLeft: '10px',
-                                    padding: '5px 10px',
+                                    padding: '8px 16px',
                                     backgroundColor: '#2196f3',
                                     color: 'white',
                                     border: 'none',
                                     borderRadius: '4px',
-                                    cursor: 'pointer'
+                                    cursor: 'pointer',
+                                    whiteSpace: 'nowrap'
                                 }}
                             >
                                 Copiar
@@ -132,17 +156,23 @@ const ProductDetail = () => {
                             href={etherscanUrl} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            style={{ color: '#2196f3', textDecoration: 'underline' }}
+                            style={{ 
+                                color: '#2196f3', 
+                                textDecoration: 'underline',
+                                display: 'inline-block',
+                                marginTop: '10px'
+                            }}
                         >
                             Ver transacción en Etherscan
                         </a>
                     </div>
                 );
+                setTransactionDetails(transactionInfo);
+                setFeedback(" ");
                 console.log("Hash de la transacción:", res.transactionHash);
-                // Esperar a que se confirme la transacción
-                await new Promise(resolve => setTimeout(resolve, 5000));
-                // Actualizar la página para mostrar los nuevos tokens
-                window.location.reload();
+                
+                // En lugar de recargar la página, actualizamos los datos
+                await handleContractLoad();
             } else {
                 setFeedback("La transacción falló. Por favor, intenta de nuevo.");
             }
@@ -249,43 +279,108 @@ const ProductDetail = () => {
                     </div>
                 </div>
 
-                <div className={styles.infoContainer}>
-                    <div className={styles.icon_container}>
-                        <div className={styles.icon}>
-                            <span className={styles.featured}><BsCurrencyExchange size={30} /></span>
-                            <h5>Símbolo</h5>
-                            <p>{filteredProduct.symbol}</p>
+                <div style={{ display: 'flex', gap: '40px', alignItems: 'flex-start' }}>
+                    <div className={styles.infoContainer} style={{ flex: 1 }}>
+                        <div className={styles.icon_container}>
+                            <div className={styles.icon}>
+                                <span className={styles.featured}><BsCurrencyExchange size={30} /></span>
+                                <h5>Símbolo</h5>
+                                <p>{filteredProduct.symbol}</p>
+                            </div>
+                            <div className={styles.icon}>
+                                <span className={styles.featured}><PiHandCoins size={30} /></span>
+                                <h5>Tokens por ETH</h5>
+                                <p>{filteredProduct.price}</p>
+                            </div>
+                            <div className={styles.icon}>
+                                <span className={styles.featured}><TbReceipt2 size={30} /></span>
+                                <h5>Tokens vendidos</h5>
+                                <p>{parseFloat(filteredProduct.totalSold).toFixed(4)}</p>
+                            </div>
+                            <div className={styles.icon}>
+                                <span className={styles.featured}><GiCoins size={30} /></span>
+                                <h5>Tokens disponibles</h5>
+                                <p>{parseFloat(filteredProduct.availableTokens).toFixed(4)}</p>
+                            </div>
                         </div>
-                        <div className={styles.icon}>
-                            <span className={styles.featured}><PiHandCoins size={30} /></span>
-                            <h5>Tokens por ETH</h5>
-                            <p>{filteredProduct.price}</p>
-                        </div>
-                        <div className={styles.icon}>
-                            <span className={styles.featured}><TbReceipt2 size={30} /></span>
-                            <h5>Tokens vendidos</h5>
-                            <p>{parseFloat(filteredProduct.totalSold).toFixed(4)}</p>
-                        </div>
-                        <div className={styles.icon}>
-                            <span className={styles.featured}><GiCoins size={30} /></span>
-                            <h5>Tokens disponibles</h5>
-                            <p>{parseFloat(filteredProduct.availableTokens).toFixed(4)}</p>
+
+                        <div className={styles.basicInfo}>
+                            <input 
+                                type="number" 
+                                step="0.0001" 
+                                min="0.0001"
+                                max={filteredProduct.availableTokens}
+                                onChange={handleAmount} 
+                                className={styles.input} 
+                                placeholder="0.0001"
+                            />
+                            <button onClick={() => {handleBuyWithETH()}} className={styles.infoBTN} >Comprar con ETH</button>
+                            {typeof feedback === 'string' && feedback && <h3 className={styles.feedback}>{feedback}</h3>}
                         </div>
                     </div>
 
-                    <div className={styles.basicInfo}>
-                        <input 
-                            type="number" 
-                            step="0.0001" 
-                            min="0.0001"
-                            max={filteredProduct.availableTokens}
-                            onChange={handleAmount} 
-                            className={styles.input} 
-                            placeholder="0.0001"
-                        />
-                        <button onClick={() => {handleBuyWithETH()}} className={styles.infoBTN} >Comprar con ETH</button>
-                        <h3 className={styles.feedback} >{feedback}</h3>
-                    </div>
+                    {transactionDetails && (
+                        <div style={{ 
+                            flex: '0 0 800px',
+                            backgroundColor: 'white',
+                            padding: '20px',
+                            borderRadius: '15px',
+                            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                            marginLeft: 'auto',
+                            minWidth: '600px',
+                            maxWidth: '800px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            textAlign: 'center'
+                        }}>
+                            <h3 style={{ marginBottom: '15px', color: 'var(--third-color)' }}>Detalles de la Transacción</h3>
+                            {React.cloneElement(transactionDetails, {
+                                style: { ...transactionDetails.props.style, width: '100%' },
+                                children: React.Children.map(transactionDetails.props.children, child => {
+                                    if (React.isValidElement(child) && child.type === 'div') {
+                                        return React.cloneElement(child, {
+                                            children: React.Children.map(child.props.children, subchild => {
+                                                if (React.isValidElement(subchild) && subchild.type === 'span') {
+                                                    return React.cloneElement(subchild, {
+                                                        style: {
+                                                            ...subchild.props.style,
+                                                            whiteSpace: 'nowrap',
+                                                            overflowX: 'auto',
+                                                            display: 'block',
+                                                            width: '100%'
+                                                        }
+                                                    });
+                                                }
+                                                if (React.isValidElement(subchild) && subchild.type === 'button') {
+                                                    return React.cloneElement(subchild, {
+                                                        style: {
+                                                            ...subchild.props.style,
+                                                            backgroundColor: 'var(--third-color)',
+                                                            color: 'white'
+                                                        }
+                                                    });
+                                                }
+                                                if (React.isValidElement(subchild) && subchild.type === 'a') {
+                                                    return React.cloneElement(subchild, {
+                                                        style: {
+                                                            ...subchild.props.style,
+                                                            color: 'var(--third-color)',
+                                                            textDecoration: 'underline',
+                                                            display: 'inline-block',
+                                                            marginTop: '10px'
+                                                        }
+                                                    });
+                                                }
+                                                return subchild;
+                                            })
+                                        });
+                                    }
+                                    return child;
+                                })
+                            })}
+                        </div>
+                    )}
                 </div>
             </div>
         </Layout>
